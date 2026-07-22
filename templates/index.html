@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Verdict — Fake News Detector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="masthead__rule"></div>
+    <div class="masthead__row">
+      <span class="masthead__eyebrow">ECE 3100 &middot; Software Development Project&nbsp;II</span>
+      <span class="masthead__eyebrow masthead__eyebrow--right" id="liveClock"></span>
+    </div>
+    <h1 class="masthead__title">The&nbsp;Verdict</h1>
+    <p class="masthead__subtitle">A machine-learning desk that reads the news so it can tell you what's real — on demand or as it breaks.</p>
+    <div class="masthead__rule"></div>
+  </header>
+
+  <main class="desk">
+
+    <section class="clipping">
+      <div class="clipping__label">
+        <span>Submit a clipping</span>
+        <span class="clipping__count" id="charCount">0 characters</span>
+      </div>
+
+      <div class="mode-toggle" role="tablist" aria-label="Input mode">
+        <button type="button" class="mode-toggle__btn is-active" id="modeTextBtn" role="tab" aria-selected="true">Paste text</button>
+        <button type="button" class="mode-toggle__btn" id="modeUrlBtn" role="tab" aria-selected="false">Check a live URL</button>
+      </div>
+
+      <textarea id="articleInput" class="clipping__input" placeholder="Paste a headline, article excerpt, or claim here for analysis…" spellcheck="false"></textarea>
+      <input id="urlInput" class="clipping__input clipping__input--url" type="url" placeholder="https://example-news-site.com/story…" hidden>
+
+      <div class="clipping__footer">
+        <button id="analyzeBtn" class="analyze-btn">
+          <span class="analyze-btn__label">Send to the desk</span>
+          <span class="analyze-btn__spinner" aria-hidden="true"></span>
+        </button>
+        <p class="clipping__hint">Model on duty: <strong>{{ best_model or "not trained yet" }}</strong>{% if best_f1 %} &middot; validation F1 {{ best_f1 }}{% endif %}</p>
+      </div>
+    </section>
+
+    <section class="verdict-stage" id="verdictStage" aria-live="polite">
+      <div class="verdict-stage__placeholder" id="verdictPlaceholder">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="10.5" cy="10.5" r="6.5"/>
+          <line x1="15.3" y1="15.3" x2="21" y2="21"/>
+        </svg>
+        <p>Verdicts are stamped here once the desk reviews your clipping.</p>
+      </div>
+
+      <div class="verdict-stamp-wrap" id="stampWrap" hidden>
+        <div class="verdict-stamp" id="verdictStamp">
+          <span class="verdict-stamp__word" id="stampWord">REAL</span>
+        </div>
+        <dl class="verdict-meta">
+          <div>
+            <dt>Confidence</dt>
+            <dd id="confidenceValue">—</dd>
+          </div>
+          <div>
+            <dt>Reviewed by</dt>
+            <dd>{{ best_model or "—" }}</dd>
+          </div>
+          <div id="verdictTitleRow" hidden>
+            <dt>Headline fetched</dt>
+            <dd id="verdictTitle">—</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="verdict-error" id="verdictError" hidden></div>
+    </section>
+
+    <section class="wire">
+      <div class="wire__header">
+        <span class="wire__live-dot" aria-hidden="true"></span>
+        <span class="wire__title">Live Wire</span>
+        <span class="wire__subtitle">Real news feeds, classified as they come in</span>
+        <span class="wire__updated" id="wireUpdated">connecting…</span>
+      </div>
+      <ul class="wire__list" id="wireList">
+        <li class="wire__empty" id="wireEmpty">Fetching the latest headlines…</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="colophon">
+    <p>Built for the Fake News Detection project (ECE&nbsp;3100) &middot; ML pipeline: TF-IDF&nbsp;+&nbsp;classic classifiers, trained in <code>src/train_models.py</code> &middot; live URL fetch in <code>src/fetch_article.py</code> &middot; RSS wire in <code>src/live_feed.py</code></p>
+  </footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

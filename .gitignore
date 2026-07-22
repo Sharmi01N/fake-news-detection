@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.DS_Store
+*.log
+
+# real training data is large — keep it out of git, document how to get it in README
+data/*.csv
+!data/sample_data.csv
